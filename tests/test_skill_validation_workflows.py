@@ -147,6 +147,15 @@ class WorkflowContractTests(unittest.TestCase):
                     self.assertNotIn("cache", item.get("with", {}))
                 self.assertNotIn("actions/cache@", item.get("uses", ""))
 
+    def test_every_workflow_pins_stable_action_versions(self):
+        for path in sorted(WORKFLOW_DIR.glob("*.yml")):
+            workflow = load_workflow(path.name)
+            uses = [item["uses"] for item in walk(workflow) if "uses" in item]
+            self.assertTrue(uses, f"{path.name}: expected at least one versioned action")
+            for reference in uses:
+                with self.subTest(workflow=path.name, action=reference):
+                    self.assertRegex(reference, EXPECTED_ACTION)
+
     def test_cross_platform_tests_run_on_every_pull_request_without_path_filters(self):
         workflow = load_workflow("cross-platform-tests.yml")
         self.assertIn("pull_request", workflow["on"])
