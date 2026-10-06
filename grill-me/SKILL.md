@@ -13,7 +13,7 @@ A technical alignment skill designed to drill down into requirements, architectu
 ## ⚡ Quick Install
 
 ```bash
-npx skills add https://github.com/kipperdev/skillpper --skill grill-me
+npx skills add https://github.com/kipperacademy/skillpper --skill grill-me
 ```
 
 ---

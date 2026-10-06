@@ -59,13 +59,13 @@ npm --version
 Open a terminal in the project where you want to use the skills. Preview the available skills:
 
 ```bash
-npx skills add kipperdev/skillpper --list
+npx skills add kipperacademy/skillpper --list
 ```
 
 Then launch the interactive installer:
 
 ```bash
-npx skills add kipperdev/skillpper
+npx skills add kipperacademy/skillpper
 ```
 
 Follow the prompts to select your skills, target agents, and installation scope. Project installation makes the skills available in that project; global installation makes them available across your projects.
@@ -73,13 +73,13 @@ Follow the prompts to select your skills, target agents, and installation scope.
 To install just one skill:
 
 ```bash
-npx skills add kipperdev/skillpper --skill design-craft
+npx skills add kipperacademy/skillpper --skill design-craft
 ```
 
 To install it globally for Codex:
 
 ```bash
-npx skills add kipperdev/skillpper --skill design-craft --agent codex --global
+npx skills add kipperacademy/skillpper --skill design-craft --agent codex --global
 ```
 
 ### 3. Put a skill to work
@@ -96,7 +96,7 @@ New skills, improvements to existing workflows, clearer documentation, and bug r
 
 ### 1. Fork and clone the repository
 
-[Create a fork](https://github.com/kipperdev/skillpper/fork), then clone your fork and create a branch (replace `YOUR-USERNAME` with your GitHub username):
+[Create a fork](https://github.com/kipperacademy/skillpper/fork), then clone your fork and create a branch (replace `YOUR-USERNAME` with your GitHub username):
 
 ```bash
 git clone https://github.com/YOUR-USERNAME/skillpper.git
@@ -180,7 +180,7 @@ git push -u origin add/my-skill
 
 Open a pull request from your branch to this repository's default branch. Explain the problem your skill solves, include a happy-path and boundary example, and describe how you tested it. For improvements, explain what changes for the user. Include the review manifest, declared access, and any regenerated `.skill` archive when applicable. The README index change must be generated and committed in the pull request.
 
-For ideas or problems that do not need a pull request yet, [open an issue](https://github.com/kipperdev/skillpper/issues).
+For ideas or problems that do not need a pull request yet, [open an issue](https://github.com/kipperacademy/skillpper/issues).
 
 ## How the index stays up to date
 

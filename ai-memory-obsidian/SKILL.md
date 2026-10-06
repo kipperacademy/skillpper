@@ -15,7 +15,7 @@ This skill supports macOS, Linux, and Windows. Choose native paths and agent con
 ## ⚡ Quick Install
 
 ```bash
-npx skills add https://github.com/kipperdev/skillpper --skill ai-memory-obsidian
+npx skills add https://github.com/kipperacademy/skillpper --skill ai-memory-obsidian
 ```
 
 ---
