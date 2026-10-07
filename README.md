@@ -37,6 +37,8 @@ We also have a bunch of recomendation of third-party skills you can use on your 
 
 Community votes can be shown in the [GitHub Pages dashboard](docs/index.html) and summarized in [RANKING.md](RANKING.md). Maintainers can enable the low-friction voting workflow by following [the community voting setup](docs/community-voting.md).
 
+The dashboard's category filter and card badges come from [docs/skill-categories.json](docs/skill-categories.json), a manually curated skill-to-category mapping. Add your skill there when you add it so it shows up in the right filter group.
+
 ### Suggest a recommendation
 
 Open a pull request adding a row to this table with the project name, original repository, author, a short description of its use case, and official installation instructions. Include an example of how you used it in the pull request so maintainers can assess the recommendation.
