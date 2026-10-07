@@ -83,6 +83,9 @@ function renderSkills(skills) {
     const sourceLink = node.querySelector('[data-kind="source"]');
 
     card.dataset.skill = skill.skill;
+    if (Number(skill.rank) === 1) {
+      card.classList.add("is-winner");
+    }
     rank.textContent = skill.rank;
     title.textContent = skill.skill;
     description.textContent = skill.description;

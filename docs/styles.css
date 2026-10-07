@@ -314,7 +314,7 @@ h2 {
   transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
 }
 
-.skill-card:first-child {
+.skill-card.is-winner {
   border-color: rgba(237, 127, 42, 0.52);
   background: linear-gradient(90deg, rgba(255, 240, 220, 0.96), rgba(255, 255, 255, 0.94));
   box-shadow: var(--shadow-md);
@@ -451,7 +451,7 @@ h3 {
   background: rgba(31, 25, 45, 0.92);
 }
 
-:root[data-theme="dark"] .skill-card:first-child {
+:root[data-theme="dark"] .skill-card.is-winner {
   border-color: rgba(237, 127, 42, 0.5);
   background: linear-gradient(90deg, rgba(51, 32, 15, 0.9), rgba(31, 25, 45, 0.95));
 }
