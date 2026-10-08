@@ -21,6 +21,16 @@ DEFAULT_CATEGORY = "Skill Votes"
 MARKER_RE = re.compile(r"<!--\s*skillpper-vote-skill:\s*([a-z0-9]+(?:-[a-z0-9]+)*)\s*-->")
 
 
+class MissingVoteCategoryError(RuntimeError):
+    """Raised when the configured Discussion category does not exist yet."""
+
+    def __init__(self, category_name: str) -> None:
+        super().__init__(
+            f"Discussion category {category_name!r} was not found. "
+            "Enable GitHub Discussions and create that category first."
+        )
+
+
 def read_skill_metadata(root: Path) -> dict[str, str]:
     """Return root-level skill names mapped to descriptions."""
     skills = {}
@@ -88,6 +98,13 @@ def github_graphql(token: str, query: str, variables: dict) -> dict:
     return result["data"]
 
 
+def resolve_category_id(categories: list[dict], category_name: str) -> str:
+    for category in categories:
+        if category["name"].lower() == category_name.lower():
+            return category["id"]
+    raise MissingVoteCategoryError(category_name)
+
+
 def repository_context(token: str, owner: str, name: str, category_name: str) -> tuple[str, str]:
     query = """
     query($owner: String!, $name: String!) {
@@ -105,13 +122,8 @@ def repository_context(token: str, owner: str, name: str, category_name: str) ->
     repo = github_graphql(token, query, {"owner": owner, "name": name})["repository"]
     if repo is None:
         raise RuntimeError(f"Repository {owner}/{name} was not found")
-    for category in repo["discussionCategories"]["nodes"]:
-        if category["name"].lower() == category_name.lower():
-            return repo["id"], category["id"]
-    raise RuntimeError(
-        f"Discussion category {category_name!r} was not found. "
-        "Enable GitHub Discussions and create that category first."
-    )
+    category_id = resolve_category_id(repo["discussionCategories"]["nodes"], category_name)
+    return repo["id"], category_id
 
 
 def fetch_category_discussions(token: str, owner: str, name: str, category_id: str) -> dict[str, dict]:
@@ -374,6 +386,11 @@ def main() -> int:
         action="store_true",
         help="create missing vote discussions before generating RANKING.md",
     )
+    parser.add_argument(
+        "--allow-missing-category",
+        action="store_true",
+        help="exit successfully when the vote category is not configured yet",
+    )
     args = parser.parse_args()
 
     try:
@@ -413,6 +430,13 @@ def main() -> int:
             or write_dashboard_data(data, args.check)
             or write_discussion_registry(registry, args.check)
         )
+    except MissingVoteCategoryError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        if args.allow_missing_category or os.environ.get("GITHUB_EVENT_NAME") == "schedule":
+            print(f"::warning::{exc}")
+            print("Skipping this run until the vote category is configured.", file=sys.stderr)
+            return 0
+        return 1
     except (OSError, RuntimeError, ValueError, yaml.YAMLError) as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 1
