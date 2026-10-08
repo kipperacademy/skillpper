@@ -1,13 +1,21 @@
 from pathlib import Path
+import contextlib
+import io
+import os
+import sys
 import tempfile
 import unittest
+from unittest import mock
 
+from scripts import update_skill_votes
 from scripts.update_skill_votes import (
+    MissingVoteCategoryError,
     canonical_discussions,
     dashboard_data,
     parse_skill_marker,
     read_skill_metadata,
     render_ranking,
+    resolve_category_id,
     thumbs_up_count,
     vote_body,
 )
@@ -108,6 +116,38 @@ class SkillVotesTests(unittest.TestCase):
         )
 
         self.assertEqual(discussions, {})
+
+    def test_resolve_category_id_matches_case_insensitively(self):
+        categories = [
+            {"id": "C_general", "name": "General"},
+            {"id": "C_votes", "name": "Skill Votes"},
+        ]
+        self.assertEqual(resolve_category_id(categories, "skill votes"), "C_votes")
+
+    def test_resolve_category_id_raises_when_category_is_missing(self):
+        categories = [{"id": "C_general", "name": "General"}]
+        with self.assertRaises(MissingVoteCategoryError):
+            resolve_category_id(categories, "Skill Votes")
+
+    def _run_main(self, argv, environ):
+        missing = MissingVoteCategoryError("Skill Votes")
+        with mock.patch.object(update_skill_votes, "repository_context", side_effect=missing), \
+             mock.patch.dict(os.environ, environ, clear=True), \
+             mock.patch.object(sys, "argv", ["update_skill_votes.py", *argv]), \
+             contextlib.redirect_stderr(io.StringIO()):
+            return update_skill_votes.main()
+
+    def test_main_skips_failure_for_scheduled_runs_when_category_is_missing(self):
+        environ = {"GH_TOKEN": "token", "GITHUB_REPOSITORY": "owner/name", "GITHUB_EVENT_NAME": "schedule"}
+        self.assertEqual(self._run_main([], environ), 0)
+
+    def test_main_fails_for_manual_runs_when_category_is_missing(self):
+        environ = {"GH_TOKEN": "token", "GITHUB_REPOSITORY": "owner/name"}
+        self.assertEqual(self._run_main([], environ), 1)
+
+    def test_main_allows_missing_category_with_explicit_flag(self):
+        environ = {"GH_TOKEN": "token", "GITHUB_REPOSITORY": "owner/name"}
+        self.assertEqual(self._run_main(["--allow-missing-category"], environ), 0)
 
     def test_read_skill_metadata_discovers_root_skills(self):
         with tempfile.TemporaryDirectory() as temp:

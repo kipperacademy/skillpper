@@ -5,6 +5,7 @@ import stat
 import unittest
 
 from scripts.skill_validation.bundles import validate_bundle
+from scripts.skill_validation.catalog import discover
 from scripts.skill_validation.models import Skill, SourceFile
 from scripts.skill_validation.structure import validate_structure
 
@@ -34,6 +35,23 @@ def source_files(skill_name: str) -> tuple[SourceFile, ...]:
 
 def skill_from_source(name: str) -> Skill:
     return Skill(name, source_files(name))
+
+
+def repository_source_files() -> tuple[SourceFile, ...]:
+    files = []
+    for path in sorted(ROOT.rglob("*")):
+        relative = path.relative_to(ROOT)
+        if relative.parts[0].startswith("."):
+            continue
+        if path.is_symlink():
+            raise AssertionError(f"symlink in repository source: {relative.as_posix()}")
+        if path.is_dir():
+            continue
+        if not path.is_file():
+            raise AssertionError(f"non-regular repository source: {relative.as_posix()}")
+        mode = "100755" if path.stat().st_mode & stat.S_IXUSR else "100644"
+        files.append(SourceFile(relative.as_posix(), path.read_bytes(), mode))
+    return tuple(files)
 
 
 class SkillCatalogContractTests(unittest.TestCase):
@@ -70,6 +88,17 @@ class SkillCatalogContractTests(unittest.TestCase):
         workflow = (ROOT / ".github/workflows/update-skills-index.yml").read_text(encoding="utf-8")
         self.assertNotRegex(workflow, r"(?im)^\s*contents:\s*write\s*$")
         self.assertNotRegex(workflow, r"(?im)^\s*(?:run:\s*)?git\s+push\b")
+
+
+class RepositoryRootContractTests(unittest.TestCase):
+    def test_no_root_directory_is_missing_a_skill_manifest(self):
+        _, findings = discover(repository_source_files())
+        orphans = sorted((item.rule_id, item.path) for item in findings if item.rule_id == "INV002")
+        self.assertEqual(
+            orphans,
+            [],
+            "Every top-level directory must contain a SKILL.md manifest or be an infrastructure root",
+        )
 
 
 if __name__ == "__main__":

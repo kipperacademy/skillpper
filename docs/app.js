@@ -106,7 +106,7 @@ async function loadVotes() {
     const data = await response.json();
 
     state.skills = Array.isArray(data.skills) ? data.skills : [];
-    state.repository = data.repository || inferRepositoryFromPagesUrl();
+    state.repository = inferRepositoryFromPagesUrl() || data.repository || null;
 
     totalVotes.textContent = data.total_votes ?? 0;
     totalSkills.textContent = data.total_skills ?? state.skills.length;
