@@ -1,0 +1,39 @@
+schema_version: 1
+purpose: >-
+  Guide day-1 setup, quality, security, and continuous documentation (CHANGELOG.md,
+  ARCHITECTURE.md, ROADMAP.md) for new and existing software repositories, derived
+  from the Bora Automatizar (BA) operational pack.
+differentiation: >-
+  Operates in two separate modes (bootstrap vs continuous update); strictly derives
+  all documentation from real git history and manifests; refuses to hallucinate
+  unverified architectural decisions or commits. Originated from the Bora Automatizar
+  operational pack (/ba-init).
+access:
+  files_read:
+    - Codebase manifests (e.g. package.json, pyproject.toml, go.mod, Cargo.toml)
+    - Directory trees, code files, and inline TODO/FIXME markers
+    - Git commit history, tags, and existing repository documentation
+  files_written:
+    - CHANGELOG.md, ARCHITECTURE.md, and ROADMAP.md
+    - Initial project configuration files (e.g. linter, .env.example) when initializing a new repository
+  network_hosts: []
+  tools:
+    - Git log, tag, and status inspection tools
+    - Directory listing and file reading/writing tools
+  dependencies: []
+cases:
+  - id: happy-path
+    prompt: Analyze our existing project repository and update CHANGELOG.md, ARCHITECTURE.md, and ROADMAP.md to reflect our recent commits.
+    expected:
+      - Reads git commit history and project manifests to synthesize an accurate delta.
+      - Updates or creates the three canonical documents without modifying unrelated application code.
+    forbidden:
+      - Inventing entries for features not found in the git log or source files.
+      - Overwriting or discarding existing historic changelog entries.
+  - id: boundary
+    prompt: Document why we chose our database architecture when the codebase and git logs contain no rationale or documentation.
+    expected:
+      - Notes the rationale as undocumented and asks the maintainer for confirmation instead of guessing.
+      - Keeps existing facts intact without fabricating architectural intent.
+    forbidden:
+      - Inventing fictional architectural decisions or business trade-offs.
