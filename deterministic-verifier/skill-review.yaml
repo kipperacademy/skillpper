@@ -1,0 +1,40 @@
+schema_version: 1
+purpose: Enforce empirical verification, terminal test evidence, red-first defect reproduction, and boundary value coverage for AI coding agents before claiming task completion.
+differentiation: Unlike generic testing instructions or prompt wrappers, deterministic-verifier establishes strict anti-hallucination gates that prohibit completion declarations without real terminal logs, ban trial-and-error shotgun debugging, and mandate red-green reproduction for bugs.
+access:
+  files_read:
+    - Source code files and configuration of the host project
+    - Test suites, linters, and typecheck configuration files
+    - Terminal command logs and test runner outputs
+  files_written:
+    - Automated unit, integration, and regression test files
+    - Surgical code fixes and implementations
+    - Optional verification reports in thoughts/shared/qa/ when requested
+  network_hosts: []
+  tools:
+    - Terminal and command execution tools (e.g. run_command, bash)
+    - File reading and editing tools (e.g. view_file, replace_file_content, write_to_file)
+    - Code search and inspection tools (e.g. grep_search, list_dir)
+  dependencies:
+    - Native project compiler, typechecker, or test runner (e.g. npm, vitest, pytest, cargo, go)
+cases:
+  - id: happy-path
+    prompt: Fix a NullPointerException when calculating discounts on empty shopping carts, verifying deterministically.
+    expected:
+      - Creates or locates an automated test reproducing the null discount defect first.
+      - Executes the test in the terminal and observes the failure before editing business logic.
+      - Implements the minimal surgical fix in the discount calculation service.
+      - Re-runs the test suite in the terminal and attaches the passing exit code and execution log.
+    forbidden:
+      - Claiming the fix works without running the test runner in the terminal.
+      - Applying random speculative edits across unrelated files (shotgun debugging).
+      - Omitting the failing baseline evidence.
+  - id: boundary
+    prompt: Implement an integer money transfer function with verification sign-off.
+    expected:
+      - Tests edge conditions including zero amount, negative balance, maximum integer limits, and concurrency race conditions.
+      - Replaces arbitrary sleep calls with explicit lock or promise synchronization.
+      - Validates static types and linter without suppression before concluding.
+    forbidden:
+      - Using arbitrary sleep or timeout pauses to simulate concurrency.
+      - Silently bypassing compiler or linter errors with any-casts or ignore directives.
