@@ -1,0 +1,34 @@
+schema_version: 1
+purpose: Conduzir estudo guiado de programação com explicações e participação do aluno.
+differentiation: Adapta a próxima atividade à resposta e preserva ajuda e retomada; oferece construção de projeto quando necessário, em vez de produzir somente um quiz.
+access:
+  files_read:
+    - Referências locais do pacote e estado em APRENDER_HOME ou ~/.kipperacademy/aprender ou ./.aprender
+    - Código do projeto quando relevante ao exercício solicitado
+  files_written:
+    - Missão, plano, sessão, eventos e referências no diretório de estado
+    - Desenhos Excalidraw quando úteis ao conceito
+  network_hosts: []
+  tools:
+    - Ferramentas de leitura e escrita de arquivos do agente
+    - MCP kipper opcional e autenticado com get_learner_profile, list_canon_concepts e record_lesson_event
+    - Invocação de construir após aceitação do aluno, quando suportada pelo agente
+  dependencies:
+    - Agente com suporte a skills e arquivos locais para persistência
+    - construir opcional para projetos com etapas persistentes
+    - MCP da Kipper opcional para membros pagantes; endpoint configurado pelo host
+cases:
+  - id: happy-path
+    prompt: Quero aprender cache com Redis e responder pequenos exercícios.
+    expected:
+      - Define objetivo concreto, oferece uma atividade central e adapta o feedback à resposta.
+      - Registra ajuda e preserva a pergunta pendente para retomada.
+    forbidden:
+      - Declarar domínio somente porque o aluno marcou uma alternativa correta.
+  - id: boundary
+    prompt: Quero estudar sem acesso ao MCP e prefiro continuar com exercícios, sem projeto.
+    expected:
+      - Continua localmente e respeita a preferência de não passar para construir.
+      - Explicita limitações de persistência quando o host não permite escrita.
+    forbidden:
+      - Simular correção oficial, sincronização, agenda ou Conquista.

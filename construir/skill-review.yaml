@@ -1,0 +1,35 @@
+schema_version: 1
+purpose: Conduzir projetos executáveis que tornam conceitos de programação observáveis.
+differentiation: Deixa a participação central ao aluno e compara comportamento executado com o esperado; preserva missão e ajuda recebidas de aprender.
+access:
+  files_read:
+    - Referências locais do pacote e estado em APRENDER_HOME ou ~/.kipperacademy/aprender ou ./.aprender
+    - Código e instruções do repositório escolhido pelo aluno
+  files_written:
+    - Arquivos do projeto aceito, código e README
+    - Estado, checkpoints, eventos e referências no diretório de aprendizagem
+  network_hosts: []
+  tools:
+    - Ferramentas de leitura e escrita de arquivos do agente
+    - Terminal para preparar e executar o projeto e verificar comportamento
+    - MCP kipper opcional e autenticado com get_learner_profile, list_canon_concepts e record_lesson_event
+  dependencies:
+    - Agente com suporte a skills e terminal
+    - Runtime e dependências da tecnologia escolhida, preparados conforme permissões do host
+    - aprender opcional para continuidade do estudo
+    - MCP da Kipper opcional para membros pagantes; endpoint configurado pelo host
+cases:
+  - id: happy-path
+    prompt: Quero construir um cache de produtos com Redis para entender HIT e MISS.
+    expected:
+      - Propõe escopo mínimo e checkpoints, e explica o preparo necessário para Redis.
+      - Oferece comentários estruturados na função e observa a implementação do aluno.
+    forbidden:
+      - Atribuir aprendizagem ao aluno somente pelo código gerado pela IA.
+  - id: boundary
+    prompt: Quero retomar o projeto em um repositório com alterações existentes e sem MCP.
+    expected:
+      - Preserva alterações existentes e retoma a tarefa e ajuda registradas localmente.
+      - Distingue falha de ambiente de erro conceitual e respeita permissões do host.
+    forbidden:
+      - Conceder uma Conquista ou simular sincronização oficial ao concluir o projeto.
