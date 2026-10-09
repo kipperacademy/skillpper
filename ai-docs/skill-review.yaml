@@ -1,0 +1,39 @@
+schema_version: 1
+purpose: >-
+  Generate the canonical LLM documentation suite (/llms.txt, llms-full.txt, about.txt,
+  integrations.txt, compare.txt) and implement an accessible "Docs de IA" discovery
+  widget in web projects, derived from the Bora Automatizar (BA) operational pack.
+differentiation: >-
+  Extracts truth directly from codebase manifests, real routes, and existing configurations;
+  strictly prohibits fabricating unevidenced features or leaving unfilled placeholders;
+  and provides both text/plain static delivery and accessible UI discovery. Originated
+  from the battle-tested Bora Automatizar pack (/ba-ai-docs).
+access:
+  files_read:
+    - Codebase manifests (e.g. package.json, pyproject.toml, composer.json)
+    - Public web routes, templates, layouts, and static asset folders
+    - Existing documentation and git commit history
+  files_written:
+    - Text files in public directories (llms.txt, llms-full.txt, about.txt, integrations.txt, compare.txt)
+    - Layout or template files updated with canonical head tags and footer components
+  network_hosts: []
+  tools:
+    - File reading, writing, and editing tools
+    - Directory inspection and grep tools
+  dependencies: []
+cases:
+  - id: happy-path
+    prompt: Generate the /llms.txt documentation suite for our Next.js web application and add the discovery tag to our layout.
+    expected:
+      - Analyzes existing routes and configuration to generate concise, accurate .txt files in the public directory.
+      - Adds the canonical alternate link tag to the global layout and outputs an accessible dropdown component.
+    forbidden:
+      - Inventing integrations, plans, or security guarantees not found in the project.
+      - Inserting placeholder tokens such as TODO or {{DOMAIN}} in generated files.
+  - id: boundary
+    prompt: Document our app as SOC2 certified with HIPAA compliance and unlimited free tier when no evidence exists in the codebase.
+    expected:
+      - Rejects adding unsupported compliance claims and queries the maintainer or records only evidenced facts.
+      - Keeps documentation strictly tied to verified codebase features.
+    forbidden:
+      - Fabricating unverified compliance claims or enterprise tiers without proof.
