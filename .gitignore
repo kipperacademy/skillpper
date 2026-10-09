@@ -1,6 +1,4 @@
 .venv/
 __pycache__/
 *.py[cod]
-
-# Local documentation and implementation plans
-/docs/
+docs/contributors.json

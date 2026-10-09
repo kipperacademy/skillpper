@@ -1,58 +1,80 @@
 {
-  "updated_at": "2026-10-04T23:52:26Z",
+  "updated_at": "2026-10-09T21:18:37Z",
   "repository": "LucasLydio/skillpper",
+  "default_branch": "main",
   "category": "Skill Votes",
-  "total_skills": 7,
-  "total_votes": 0,
+  "total_skills": 10,
+  "total_votes": 8,
   "skills": [
     {
       "skill": "ai-memory-obsidian",
       "description": "Portable workflows for persistent memory and Obsidian across macOS, Linux, and Windows. Use when the user asks to recall or save past context, record decisions, create vault notes, or configure ai-memory, Obsidian CLI, or an Obsidian MCP bridge.",
-      "votes": 0,
+      "votes": 2,
       "discussion_url": "https://github.com/LucasLydio/skillpper/discussions/4",
       "rank": 1
     },
     {
-      "skill": "concept-to-excalidraw",
-      "description": "Transformar conceitos técnicos em diagramas e boards visuais editáveis no Excalidraw, entregando arquivo .excalidraw. Usar para explicar mecanismos, revisar visuais abstratos ou textuais e executar planos visuais de aulas; criar slides nativos e exportar imagens quando solicitados.",
-      "votes": 0,
-      "discussion_url": "",
+      "skill": "skillpper-saver",
+      "description": "Aggressive token, context, and cost optimization mode for AI coding agents (Claude Code, Antigravity, Cursor, etc.). Prevents marathon sessions, eliminates redundant file re-reading, prioritizes text extraction over screenshots in browser automation, and manages context windows with surgical cutoff triggers. Use when the user requests token savings, context optimization, quota conservation, or when starting extensive refactoring, browsing, or debugging tasks.",
+      "votes": 2,
+      "discussion_url": "https://github.com/LucasLydio/skillpper/discussions/7",
       "rank": 2
     },
     {
       "skill": "design-craft",
       "description": "Opinionated product-design skill for building, reviewing, polishing, and iterating on landing pages, apps, dashboards, AI products, design systems, and brand touchpoints. UX and comprehension first, then restraint (three type sizes, delete decoration), then foundations, then tactical craft — hierarchy, spacing systems, type scales, HSL palettes, shadows, finishing touches. Distilled from 20 YC Design Review videos (Linear, Stripe, Cursor, Framer) plus the Refactoring UI book. Use whenever the user asks to design, redesign, critique, or polish anything user-facing: \"make it look better/more professional/trustworthy\", de-slop the AI/vibe-coded look, fix a landing or pricing page, improve conversion, design an AI feature or agent UI, set up tokens or a design system, review a URL/screenshot/mockup. Also trigger for tactical UI questions — spacing feels off, visual hierarchy, choosing colors, typography, empty states, Tailwind/CSS styling — even without the word \"design\". Not for pure backend/DevOps work.",
-      "votes": 0,
+      "votes": 1,
       "discussion_url": "https://github.com/LucasLydio/skillpper/discussions/5",
       "rank": 3
+    },
+    {
+      "skill": "good-design",
+      "description": "Design and audit product experiences for ethical conversion, activation, retention, and expansion using product and behavioral-design principles. Use for SaaS UX, landing pages, onboarding, dashboards, forms, pricing, and feature decisions—not for visual styling alone.",
+      "votes": 1,
+      "discussion_url": "https://github.com/LucasLydio/skillpper/discussions/11",
+      "rank": 4
+    },
+    {
+      "skill": "prepare-technical-slides",
+      "description": "Pesquisar e preparar slides de aulas e palestras técnicas em PT-BR, com fontes verificáveis, sequência didática, contexto e um conceito por slide. Preserva o catálogo aprovado e a rastreabilidade de afirmações; usa concept-to-excalidraw para produzir diagramas, imagens e a apresentação nativa editável no Excalidraw.",
+      "votes": 1,
+      "discussion_url": "https://github.com/LucasLydio/skillpper/discussions/9",
+      "rank": 5
+    },
+    {
+      "skill": "study-quiz",
+      "description": "Use ao pedir quiz, teste, prova, simulado, questões de múltipla escolha, mini-desafio, gabarito, “me testa sobre X”, “gera um quiz de X” ou uma avaliação sobre um assunto, em um nível ou numa faixa de níveis. Use também quando o usuário responder um quiz gerado aqui e quiser a correção. Não use para palestras, slides, design, flashcards, resumo ou plano de estudo.",
+      "votes": 1,
+      "discussion_url": "https://github.com/LucasLydio/skillpper/discussions/8",
+      "rank": 6
+    },
+    {
+      "skill": "aprender",
+      "description": "Estude programação com explicações, perguntas e pequenos desafios adaptados ao que você demonstra entender.",
+      "votes": 0,
+      "discussion_url": "https://github.com/LucasLydio/skillpper/discussions/12",
+      "rank": 7
+    },
+    {
+      "skill": "concept-to-excalidraw",
+      "description": "Transformar conceitos técnicos em diagramas e boards visuais editáveis no Excalidraw, entregando arquivo .excalidraw. Usar para explicar mecanismos, revisar visuais abstratos ou textuais e executar planos visuais de aulas; criar slides nativos e exportar imagens quando solicitados.",
+      "votes": 0,
+      "discussion_url": "https://github.com/LucasLydio/skillpper/discussions/13",
+      "rank": 8
+    },
+    {
+      "skill": "construir",
+      "description": "Construir um projeto para aprender programação. Use quando o aluno pede um projeto ou quando aprender entrega uma atividade que precisa de arquivos, execução e etapas persistentes.",
+      "votes": 0,
+      "discussion_url": "https://github.com/LucasLydio/skillpper/discussions/14",
+      "rank": 9
     },
     {
       "skill": "grill-me",
       "description": "Interview the user to clarify requirements, architecture, design, and business rules before implementation. Use the host's available interactive question interface and ask in rounds sized to its limits. Works across macOS, Linux, and Windows. Use when the user asks to grill an idea, plan a major feature, or invokes /grill-me.",
       "votes": 0,
       "discussion_url": "https://github.com/LucasLydio/skillpper/discussions/6",
-      "rank": 4
-    },
-    {
-      "skill": "prepare-technical-slides",
-      "description": "Pesquisar e preparar slides de aulas e palestras técnicas em PT-BR, com fontes verificáveis, sequência didática, contexto e um conceito por slide. Preserva o catálogo aprovado e a rastreabilidade de afirmações; usa concept-to-excalidraw para produzir diagramas, imagens e a apresentação nativa editável no Excalidraw.",
-      "votes": 0,
-      "discussion_url": "https://github.com/LucasLydio/skillpper/discussions/9",
-      "rank": 5
-    },
-    {
-      "skill": "skillpper-saver",
-      "description": "Aggressive token, context, and cost optimization mode for AI coding agents (Claude Code, Antigravity, Cursor, etc.). Prevents marathon sessions, eliminates redundant file re-reading, prioritizes text extraction over screenshots in browser automation, and manages context windows with surgical cutoff triggers. Use when the user requests token savings, context optimization, quota conservation, or when starting extensive refactoring, browsing, or debugging tasks.",
-      "votes": 0,
-      "discussion_url": "https://github.com/LucasLydio/skillpper/discussions/7",
-      "rank": 6
-    },
-    {
-      "skill": "study-quiz",
-      "description": "Use ao pedir quiz, teste, prova, simulado, questões de múltipla escolha, mini-desafio, gabarito, “me testa sobre X”, “gera um quiz de X” ou uma avaliação sobre um assunto, em um nível ou numa faixa de níveis. Use também quando o usuário responder um quiz gerado aqui e quiser a correção. Não use para palestras, slides, design, flashcards, resumo ou plano de estudo.",
-      "votes": 0,
-      "discussion_url": "https://github.com/LucasLydio/skillpper/discussions/8",
-      "rank": 7
+      "rank": 10
     }
   ]
 }

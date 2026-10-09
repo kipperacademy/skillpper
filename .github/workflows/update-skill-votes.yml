@@ -8,8 +8,6 @@ on:
         required: true
         default: true
         type: boolean
-  schedule:
-    - cron: "*/5 * * * *"
 
 permissions:
   contents: write
@@ -18,6 +16,8 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
     concurrency:
       group: skill-votes-update
       cancel-in-progress: false
@@ -33,6 +33,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.sync_discussions }}" != "true" ]; then
             python scripts/update_skill_votes.py
@@ -40,11 +41,13 @@ jobs:
             python scripts/update_skill_votes.py --sync-discussions
           fi
       - name: Commit updated ranking
+        id: commit
         env:
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
           if git diff --quiet -- RANKING.md docs/votes.json docs/vote-discussions.json; then
             echo "Community ranking is already up to date."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git config user.name "github-actions[bot]"
@@ -52,3 +55,13 @@ jobs:
           git add RANKING.md docs/votes.json docs/vote-discussions.json
           git commit -m "docs: update skill votes"
           git push origin "HEAD:$DEFAULT_BRANCH"
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    needs: update
+    if: needs.update.outputs.changed == 'true'
+    uses: ./.github/workflows/deploy-pages.yml
+    permissions:
+      contents: read
+      pages: write
+      id-token: write

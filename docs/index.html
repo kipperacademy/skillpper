@@ -1,23 +1,26 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Skillpper Community Ranking</title>
-    <meta name="description" content="Community ranking for Skillpper skills, powered by GitHub Discussion votes.">
-    <link rel="stylesheet" href="styles.css">
+    <meta
+      name="description"
+      content="Community ranking for Skillpper skills, powered by GitHub Discussion votes."
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crafty+Girls&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
   </head>
   <body>
     <header class="site-header">
       <nav class="topbar" aria-label="Primary">
         <a class="brand" href="./">
-          <img src="logo.webp" alt="" width="44" height="44">
-          <span>Skillpper Ranking</span>
+          <img src="logo.webp" alt="" width="44" height="44" />
+          <span></span>
         </a>
-        <div class="topbar-actions">
-          <a class="text-link" id="repositoryLink" href="#" hidden>Repository</a>
-          <a class="button button-secondary" id="syncButton" href="#" aria-disabled="true">Sync votes</a>
-        </div>
+        <a class="text-link" id="repositoryLink" href="#" hidden>Repository</a>
       </nav>
 
       <section class="hero" aria-labelledby="pageTitle">
@@ -25,11 +28,12 @@
           <p class="eyebrow">Community leaderboard</p>
           <h1 id="pageTitle">Find the skills developers trust most.</h1>
           <p class="hero-text">
-            Vote counts come from GitHub Discussion reactions. Use search to scan the collection, then open a skill's vote thread to support it.
+            Vote counts come from GitHub Discussion upvotes. Use search to scan
+            the collection, then open a skill's vote thread to support it.
           </p>
         </div>
         <div class="hero-panel" aria-label="Ranking summary">
-          <img class="hero-logo" src="logo.webp" alt="Skillpper mascot">
+          <img class="hero-logo" src="logbg.webp" alt="Skillpper mascot" />
           <div>
             <span class="summary-label">Total votes</span>
             <strong id="totalVotes">0</strong>
@@ -40,24 +44,132 @@
           </div>
         </div>
       </section>
+
+        <div class="agent-strip">
+          <p class="agent-strip-label">Works with your favorite agent</p>
+          <div
+            class="agent-marquee"
+            id="agentMarquee"
+            role="region"
+            aria-label="Compatible coding agents"
+            tabindex="0"
+          >
+            <div class="agent-track" id="agentTrack"></div>
+          </div>
+        </div>
     </header>
 
     <main class="page-shell">
-      <section class="toolbar" aria-label="Skill search and metadata">
-        <label class="search-field">
-          <span>Search skills</span>
-          <input id="searchInput" type="search" placeholder="Search by name or description" autocomplete="off">
-        </label>
-        <p class="updated" id="updatedAt">Loading votes...</p>
+      <section class="install-guide" aria-labelledby="installTitle">
+        <div class="install-intro">
+          <p class="eyebrow">Get started</p>
+          <h2 id="installTitle">Bring a skill to your agent.</h2>
+          <p>
+            Install reusable workflows from Skillpper in the project you are
+            working on.
+          </p>
+        </div>
+
+        <ol class="install-steps">
+          <li>
+            <span>01</span>
+            <div>
+              <strong>Have Node.js ready</strong>
+              <p>The Skills CLI runs with npm.</p>
+            </div>
+          </li>
+          <li>
+            <span>02</span>
+            <div>
+              <strong>Run the command</strong>
+              <p>Start the interactive installer below.</p>
+            </div>
+          </li>
+          <li>
+            <span>03</span>
+            <div>
+              <strong>Choose your setup</strong>
+              <p>Select skills, an agent, and install scope.</p>
+            </div>
+          </li>
+          <li>
+            <span>04</span>
+            <div>
+              <strong>Copy and Install</strong>
+              <div class="install-command">
+                <code id="installCommand"
+                  >npx skills add kipperdev/skillpper</code
+                >
+                <button
+                  class="copy-command"
+                  id="copyInstallCommand"
+                  type="button"
+                  aria-label="Copy installation command"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#423234"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <rect
+                      x="9"
+                      y="9"
+                      width="13"
+                      height="13"
+                      rx="2"
+                      ry="2"
+                    ></rect>
+                    <path
+                      d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+              <p class="copy-status" id="copyStatus" aria-live="polite"></p>
+            </div>
+          </li>
+        </ol>
       </section>
 
-      <section class="leaderboard" aria-labelledby="leaderboardTitle">
-        <div class="section-heading">
-          <p class="eyebrow">Live from discussions</p>
-          <h2 id="leaderboardTitle">Leaderboard</h2>
+      <div class="middle-ui">
+
+      <section class="search" aria-labelledby="searchTitle">
+        <div class="toolbar" aria-label="Skill search and metadata">
+          <label class="search-field">
+            <span id="searchTitle">Search skills</span>
+            <input
+              id="searchInput"
+              type="search"
+              placeholder="Search by name or description"
+              autocomplete="off"
+            />
+          </label>
+          <p class="updated" id="updatedAt">Loading votes...</p>
         </div>
+      </section>
+
+      <section class="contributors" aria-labelledby="contributorsTitle">
+        <div class="contributors-heading">
+          <a class="text-link contributors-all" id="contributorsAll" href="#" >Contributors</a>
+        </div>
+        <ul class="avatars" id="contributors"></ul>
+        <p class="contributors-status" id="contributorsStatus" role="status">Loading contributors...</p>
+      </section>
+
+
+      </div>
+
+      <section class="leaderboard" aria-labelledby="leaderboardTitle">
         <div class="skill-list" id="skillList" aria-live="polite"></div>
-        <p class="empty-state" id="emptyState" hidden>No skills match your search.</p>
+        <p class="empty-state" id="emptyState" hidden>
+          No skills match your search.
+        </p>
       </section>
     </main>
 
@@ -80,6 +192,7 @@
       </article>
     </template>
 
+    <script src="installation-guide.js" defer></script>
     <script src="app.js" defer></script>
   </body>
 </html>

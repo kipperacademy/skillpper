@@ -10,18 +10,16 @@ const template = document.querySelector("#skillCardTemplate");
 const totalVotes = document.querySelector("#totalVotes");
 const totalSkills = document.querySelector("#totalSkills");
 const updatedAt = document.querySelector("#updatedAt");
-const syncButton = document.querySelector("#syncButton");
 const repositoryLink = document.querySelector("#repositoryLink");
+const contributors = document.querySelector("#contributors");
+const contributorsAll = document.querySelector("#contributorsAll");
+const contributorsStatus = document.querySelector("#contributorsStatus");
 
 function inferRepositoryFromPagesUrl() {
   const host = window.location.hostname;
   const owner = host.endsWith(".github.io") ? host.replace(".github.io", "") : "";
   const repo = window.location.pathname.split("/").filter(Boolean)[0] || "";
   return owner && repo ? `${owner}/${repo}` : null;
-}
-
-function workflowUrl(repository) {
-  return `https://github.com/${repository}/actions/workflows/update-skill-votes.yml`;
 }
 
 function repositoryUrl(repository) {
@@ -52,12 +50,50 @@ function voteLabel(count) {
 
 function configureLinks(repository) {
   if (!repository) return;
-  syncButton.href = workflowUrl(repository);
-  syncButton.removeAttribute("aria-disabled");
-  syncButton.title = "Requires write access to the repository";
-
   repositoryLink.href = repositoryUrl(repository);
   repositoryLink.hidden = false;
+}
+
+function configureContributorsLink(repository) {
+  if (!repository || !/^[\w.-]+\/[\w.-]+$/.test(repository)) return;
+  contributorsAll.href = `${repositoryUrl(repository)}/graphs/contributors`;
+  contributorsAll.hidden = false;
+}
+
+async function loadContributors() {
+  try {
+    const response = await fetch("contributors.json");
+    if (!response.ok) throw new Error(`Contributor data returned ${response.status}`);
+    const data = await response.json();
+    if (!Array.isArray(data.contributors)) throw new Error("Invalid contributor data");
+
+    configureContributorsLink(data.repository);
+    contributors.replaceChildren();
+    data.contributors.forEach((person) => {
+      if (!person.login || !person.html_url || !person.avatar_url) return;
+      const item = document.createElement("li");
+      const link = document.createElement("a");
+      const avatar = document.createElement("img");
+      const name = document.createElement("span");
+      link.className = "contributor-link";
+      link.href = person.html_url;
+      avatar.src = person.avatar_url;
+      avatar.alt = "";
+      avatar.width = 36;
+      avatar.height = 36;
+      avatar.loading = "lazy";
+      name.textContent = person.login;
+      link.append(avatar, name);
+      item.append(link);
+      contributors.append(item);
+    });
+    contributorsStatus.textContent = contributors.childElementCount
+      ? ""
+      : "No contributors yet.";
+  } catch (error) {
+    configureContributorsLink(state.repository || inferRepositoryFromPagesUrl());
+    contributorsStatus.textContent = "Contributors are unavailable right now.";
+  }
 }
 
 function renderSkills(skills) {
@@ -110,7 +146,7 @@ async function loadVotes() {
 
     totalVotes.textContent = data.total_votes ?? 0;
     totalSkills.textContent = data.total_skills ?? state.skills.length;
-    updatedAt.textContent = formatDate(data.updated_at);
+    updatedAt.textContent = '';
     configureLinks(state.repository);
     renderSkills(state.skills);
   } catch (error) {
@@ -122,3 +158,4 @@ async function loadVotes() {
 
 searchInput.addEventListener("input", applySearch);
 loadVotes();
+loadContributors();
