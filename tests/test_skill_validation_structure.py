@@ -62,6 +62,15 @@ cases:
     def test_description_1024_characters_is_valid(self):
         self.assertEqual(self.errors(self.skill(metadata="name: demo\ndescription: '" + "x" * 1024 + "'\n")), [])
 
+    def test_host_invocation_metadata_preserves_types(self):
+        base = "name: demo\ndescription: Estudo guiado.\n"
+        for flag in ("true", "false"):
+            with self.subTest(flag=flag):
+                self.assertEqual(self.errors(self.skill(metadata=base + "argument-hint: O que estudar?\ndisable-model-invocation: " + flag + "\n")), [])
+        for field in ("disable-model-invocation: 'false'", "disable-model-invocation: 0", "argument-hint: []", "argument-hint: ''", "unknown-field: true"):
+            with self.subTest(field=field):
+                self.assertTrue(any(error.rule_id == "STR005" for error in self.errors(self.skill(metadata=base + field + "\n"))))
+
     def test_duplicate_keys_aliases_and_malformed_yaml_are_rejected(self):
         for raw in (
             b"name: demo\ndescription: one\ndescription: two\n",

@@ -363,11 +363,13 @@ def validate_structure(skill: Skill) -> tuple[Finding, ...]:
             if not isinstance(description, str) or not description.strip() or len(description) > MAX_DESCRIPTION:
                 findings.append(_error("STR004", skill_path, "description must be a nonempty string of at most 1024 characters"))
             for key in metadata:
-                if key not in {"name", "description", "license", "compatibility", "metadata", "allowed-tools"}:
+                if key not in {"name", "description", "license", "compatibility", "metadata", "allowed-tools", "argument-hint", "disable-model-invocation"}:
                     findings.append(_error("STR005", skill_path, "unsupported metadata field"))
-            for key in ("license", "compatibility"):
+            for key in ("license", "compatibility", "argument-hint"):
                 if key in metadata and (not isinstance(metadata[key], str) or not metadata[key].strip()):
                     findings.append(_error("STR005", skill_path, f"{key} must be a nonempty string"))
+            if "disable-model-invocation" in metadata and type(metadata["disable-model-invocation"]) is not bool:
+                findings.append(_error("STR005", skill_path, "disable-model-invocation must be a boolean"))
             if ("compatibility" in metadata and isinstance(metadata["compatibility"], str)
                     and len(metadata["compatibility"]) > 500):
                 findings.append(_error("STR005", skill_path, "compatibility exceeds 500 characters"))

@@ -11,7 +11,7 @@ Mantém pesquisa e bibliografia rastreáveis e incorpora as orientações de Fer
 
 - **Esta skill:** pesquisa, tese, duração, contexto, ordem dos conceitos, texto de cada slide, notas da professora, fontes e revisão didática.
 - **`concept-to-excalidraw`:** transformar o plano em diagramas e imagens, aplicar o estilo visual e montar/conferir a apresentação com slides nativos do Excalidraw.
-- Antes da produção visual, ler a [skill de execução](../concept-to-excalidraw/SKILL.md). Se estiver instalada em outro local, localizar pelo nome exato. Se não estiver disponível, concluir o blueprint e informar que falta essa dependência; não declarar slides gerados.
+- Antes da produção visual, localizar e ler a skill instalada `concept-to-excalidraw` pelo nome exato. A [fonte da skill de execução](https://github.com/kipperacademy/skillpper/blob/main/concept-to-excalidraw/SKILL.md) serve como referência de distribuição. Se não estiver disponível, concluir o blueprint e informar que falta essa dependência; não declarar slides gerados.
 - Pedido de pesquisa pontual não exige apresentação. Preparar slides não implica gerar código, áudio ou configurar integrações novas.
 
 ## Regras inegociáveis
