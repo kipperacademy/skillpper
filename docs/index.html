@@ -6,6 +6,22 @@
     <title>Skillpper Community Ranking</title>
     <meta name="description" content="Community ranking for Skillpper skills, powered by GitHub Discussion votes.">
     <link rel="stylesheet" href="styles.css">
+    <script>
+      // Apply the stored theme before first paint to avoid a light flash.
+      (function () {
+        var saved = null;
+        try {
+          saved = window.localStorage.getItem("skillpper-theme");
+        } catch (error) {
+          saved = null;
+        }
+        var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        if (saved !== "dark" && saved !== "light") {
+          saved = prefersDark ? "dark" : "light";
+        }
+        document.documentElement.dataset.theme = saved;
+      })();
+    </script>
   </head>
   <body>
     <header class="site-header">
@@ -15,6 +31,7 @@
           <span>Skillpper Ranking</span>
         </a>
         <div class="topbar-actions">
+          <button class="button" id="themeToggle" type="button" aria-label="Toggle dark mode" aria-pressed="false">🌙 Dark</button>
           <a class="text-link" id="repositoryLink" href="#" hidden>Repository</a>
           <a class="button button-secondary" id="syncButton" href="#" aria-disabled="true">Sync votes</a>
         </div>
@@ -43,10 +60,24 @@
     </header>
 
     <main class="page-shell">
-      <section class="toolbar" aria-label="Skill search and metadata">
+      <section class="toolbar" aria-label="Skill search, filters and metadata">
         <label class="search-field">
           <span>Search skills</span>
           <input id="searchInput" type="search" placeholder="Search by name or description" autocomplete="off">
+        </label>
+        <label class="select-field" id="categoryField" hidden>
+          <span>Category</span>
+          <select id="categorySelect">
+            <option value="all">All categories</option>
+          </select>
+        </label>
+        <label class="select-field">
+          <span>Sort by</span>
+          <select id="sortSelect">
+            <option value="rank">Ranking</option>
+            <option value="az">Name (A–Z)</option>
+            <option value="za">Name (Z–A)</option>
+          </select>
         </label>
         <p class="updated" id="updatedAt">Loading votes...</p>
       </section>
@@ -57,7 +88,7 @@
           <h2 id="leaderboardTitle">Leaderboard</h2>
         </div>
         <div class="skill-list" id="skillList" aria-live="polite"></div>
-        <p class="empty-state" id="emptyState" hidden>No skills match your search.</p>
+        <p class="empty-state" id="emptyState" hidden>No skills match your search or filters.</p>
       </section>
     </main>
 
@@ -69,7 +100,10 @@
         <div class="skill-main">
           <div class="skill-title-row">
             <h3></h3>
-            <span class="vote-pill"></span>
+            <div class="pill-group">
+              <span class="category-pill" data-kind="category" hidden></span>
+              <span class="vote-pill"></span>
+            </div>
           </div>
           <p></p>
           <div class="skill-actions">
