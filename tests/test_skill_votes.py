@@ -1,16 +1,23 @@
 from pathlib import Path
+import json
+import re
 import tempfile
 import unittest
 
 from scripts.update_skill_votes import (
+    VOTES_END,
+    VOTES_START,
     canonical_discussions,
     dashboard_data,
     parse_skill_marker,
     read_skill_metadata,
+    render_embedded_votes,
     render_ranking,
     thumbs_up_count,
     vote_body,
 )
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 class SkillVotesTests(unittest.TestCase):
@@ -108,6 +115,49 @@ class SkillVotesTests(unittest.TestCase):
         )
 
         self.assertEqual(discussions, {})
+
+    def test_dashboard_page_embeds_vote_data(self):
+        page = (ROOT / "docs" / "index.html").read_text(encoding="utf-8")
+        self.assertEqual(page.count(VOTES_START), 1, "docs/index.html must contain exactly one VOTES:START marker")
+        self.assertEqual(page.count(VOTES_END), 1, "docs/index.html must contain exactly one VOTES:END marker")
+        match = re.search(r'<script type="application/json" id="votesData">(.*?)</script>', page, re.DOTALL)
+        if match is None:
+            self.fail("docs/index.html must embed vote data in #votesData")
+        payload = json.loads(match.group(1))
+        votes = json.loads((ROOT / "docs" / "votes.json").read_text(encoding="utf-8"))
+        comparable_payload = dict(payload)
+        comparable_votes = dict(votes)
+        comparable_payload.pop("updated_at", None)
+        comparable_votes.pop("updated_at", None)
+        self.assertEqual(
+            comparable_payload, comparable_votes,
+            "Embedded vote data is outdated. Run: python scripts/update_skill_votes.py",
+        )
+
+    def test_embedded_votes_escape_closing_script_tags(self):
+        data = {
+            "updated_at": "2026-10-07T00:00:00Z",
+            "repository": "example/repo",
+            "category": "Skill Votes",
+            "total_skills": 1,
+            "total_votes": 0,
+            "skills": [
+                {
+                    "skill": "evil",
+                    "description": "Tricky </script><script>alert(1)</script> description",
+                    "votes": 0,
+                    "discussion_url": "",
+                    "rank": 1,
+                }
+            ],
+        }
+        block = render_embedded_votes(data)
+        self.assertNotIn("</script><script>", block)
+        self.assertNotIn("</script>", block.split('id="votesData">', 1)[1].rsplit("</script>", 1)[0])
+        match = re.search(r'<script type="application/json" id="votesData">(.*?)</script>', block, re.DOTALL)
+        if match is None:
+            self.fail("rendered block must contain parseable #votesData payload")
+        self.assertEqual(json.loads(match.group(1)), data)
 
     def test_read_skill_metadata_discovers_root_skills(self):
         with tempfile.TemporaryDirectory() as temp:

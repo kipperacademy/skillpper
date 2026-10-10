@@ -16,7 +16,10 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 RANKING = ROOT / "RANKING.md"
 DOCS_DATA = ROOT / "docs" / "votes.json"
+DOCS_PAGE = ROOT / "docs" / "index.html"
 DISCUSSION_REGISTRY = ROOT / "docs" / "vote-discussions.json"
+VOTES_START = "<!-- VOTES:START -->"
+VOTES_END = "<!-- VOTES:END -->"
 DEFAULT_CATEGORY = "Skill Votes"
 MARKER_RE = re.compile(r"<!--\s*skillpper-vote-skill:\s*([a-z0-9]+(?:-[a-z0-9]+)*)\s*-->")
 
@@ -358,6 +361,71 @@ def write_dashboard_data(data: dict, check: bool) -> int:
     return 0
 
 
+def render_embedded_votes(data: dict) -> str:
+    payload = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
+    return (
+        f"{VOTES_START}\n"
+        f'    <script type="application/json" id="votesData">{payload}</script>\n'
+        f"    {VOTES_END}"
+    )
+
+
+def updated_dashboard_page(data: dict) -> str:
+    page = DOCS_PAGE.read_text(encoding="utf-8")
+    if page.count(VOTES_START) != 1 or page.count(VOTES_END) != 1:
+        raise ValueError(f"{DOCS_PAGE} must contain exactly one pair of votes data markers")
+    start = page.index(VOTES_START)
+    end = page.index(VOTES_END) + len(VOTES_END)
+    if end < start:
+        raise ValueError(f"{DOCS_PAGE} votes data markers are in the wrong order")
+    return page[:start] + render_embedded_votes(data) + page[end:]
+
+
+def read_embedded_votes_payload(page: str) -> dict | None:
+    match = re.search(
+        r'<script type="application/json" id="votesData">(.*?)</script>',
+        page,
+        re.DOTALL,
+    )
+    if not match:
+        return None
+    try:
+        payload = json.loads(match.group(1))
+    except json.JSONDecodeError:
+        return None
+    return payload if isinstance(payload, dict) else None
+
+
+def write_embedded_votes(data: dict, check: bool) -> int:
+    try:
+        page = DOCS_PAGE.read_text(encoding="utf-8")
+        if page.count(VOTES_START) != 1 or page.count(VOTES_END) != 1:
+            raise ValueError(f"{DOCS_PAGE} must contain exactly one pair of votes data markers")
+        current_payload = read_embedded_votes_payload(page)
+    except (OSError, ValueError) as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+    if isinstance(current_payload, dict):
+        comparable_current = dict(current_payload)
+        comparable_next = dict(data)
+        comparable_current.pop("updated_at", None)
+        comparable_next.pop("updated_at", None)
+        if comparable_current == comparable_next:
+            print("Embedded dashboard vote data is up to date.")
+            return 0
+    if check:
+        print("Embedded dashboard vote data is outdated. Run: python scripts/update_skill_votes.py", file=sys.stderr)
+        return 1
+    try:
+        updated = updated_dashboard_page(data)
+    except (OSError, ValueError) as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+    DOCS_PAGE.write_text(updated, encoding="utf-8")
+    print("Updated the embedded dashboard vote data.")
+    return 0
+
+
 def split_repository(value: str) -> tuple[str, str]:
     parts = value.split("/", 1)
     if len(parts) != 2 or not all(parts):
@@ -388,6 +456,7 @@ def main() -> int:
             return (
                 write_ranking(content, args.check)
                 or write_dashboard_data(data, args.check)
+                or write_embedded_votes(data, args.check)
                 or write_discussion_registry(registry, args.check)
             )
 
@@ -411,6 +480,7 @@ def main() -> int:
         return (
             write_ranking(content, args.check)
             or write_dashboard_data(data, args.check)
+            or write_embedded_votes(data, args.check)
             or write_discussion_registry(registry, args.check)
         )
     except (OSError, RuntimeError, ValueError, yaml.YAMLError) as exc:

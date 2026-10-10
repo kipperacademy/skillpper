@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Skillpper Community Ranking</title>
-    <meta name="description" content="Community ranking for Skillpper skills, powered by GitHub Discussion votes.">
+    <title>Skillpper — Skills for AI coding agents</title>
+    <meta name="description" content="Free, open-source skills for Claude Code, Codex, and Cursor. Install with one command, then browse the community ranking.">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
@@ -16,28 +16,41 @@
         </a>
         <div class="topbar-actions">
           <a class="text-link" id="repositoryLink" href="#" hidden>Repository</a>
-          <a class="button button-secondary" id="syncButton" href="#" aria-disabled="true">Sync votes</a>
+          <a class="text-link" id="syncButton" href="#" aria-disabled="true">Sync votes</a>
         </div>
       </nav>
 
       <section class="hero" aria-labelledby="pageTitle">
         <div class="hero-copy">
-          <p class="eyebrow">Community leaderboard</p>
-          <h1 id="pageTitle">Find the skills developers trust most.</h1>
+          <h1 id="pageTitle">Reusable skills for your AI coding agent.</h1>
           <p class="hero-text">
-            Vote counts come from GitHub Discussion reactions. Use search to scan the collection, then open a skill's vote thread to support it.
+            Skillpper is a free, open-source collection of skills for Claude Code, Codex, and Cursor. Copy the command, pick what fits your project, and put your agent to work:
+          </p>
+          <div class="terminal" role="group" aria-label="Installation command">
+            <span class="terminal-prompt" aria-hidden="true">$</span>
+            <code id="installCmd">npx skills add kipperdev/skillpper</code>
+            <button class="terminal-copy" id="copyCmdBtn" type="button" aria-label="Copy installation command" aria-live="polite">
+              <svg class="icon-copy" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true">
+                <rect x="5.5" y="5.5" width="8" height="8" rx="1.5"></rect>
+                <path d="M10.5 5.5v-2a1.5 1.5 0 0 0-1.5-1.5H4A1.5 1.5 0 0 0 2.5 3.5v5A1.5 1.5 0 0 0 4 10h1.5"></path>
+              </svg>
+              <svg class="icon-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden>
+                <path d="M3 8.5l3.5 3.5L13 4.5"></path>
+              </svg>
+            </button>
+          </div>
+          <p class="hero-links">
+            <a class="text-link" id="installGuideLink" href="https://github.com/kipperacademy/skillpper#how-to-install">How installing works</a>
           </p>
         </div>
-        <div class="hero-panel" aria-label="Ranking summary">
-          <img class="hero-logo" src="logo.webp" alt="Skillpper mascot">
-          <div>
-            <span class="summary-label">Total votes</span>
-            <strong id="totalVotes">0</strong>
-          </div>
-          <div>
-            <span class="summary-label">Skills ranked</span>
-            <strong id="totalSkills">0</strong>
-          </div>
+        <div class="hero-panel" aria-label="How installing works">
+          <p class="panel-count"><strong id="totalSkills">0</strong> skills in the collection</p>
+          <ol class="steps">
+            <li>Run the command in your project folder</li>
+            <li>Pick skills and install scope</li>
+            <li>Ask your agent to use one</li>
+          </ol>
+          <p class="panel-note">Needs Node.js and Claude Code, Codex, or Cursor.</p>
         </div>
       </section>
     </header>
@@ -53,8 +66,11 @@
 
       <section class="leaderboard" aria-labelledby="leaderboardTitle">
         <div class="section-heading">
-          <p class="eyebrow">Live from discussions</p>
-          <h2 id="leaderboardTitle">Leaderboard</h2>
+          <div>
+            <p class="eyebrow">Live from discussions</p>
+            <h2 id="leaderboardTitle">Leaderboard</h2>
+            <p class="section-sub">Vote counts come from GitHub Discussion reactions. Search the collection, then open a skill's vote thread to support it.</p>
+          </div>
         </div>
         <div class="skill-list" id="skillList" aria-live="polite"></div>
         <p class="empty-state" id="emptyState" hidden>No skills match your search.</p>
@@ -80,6 +96,9 @@
       </article>
     </template>
 
+<!-- VOTES:START -->
+    <script type="application/json" id="votesData">{"updated_at":"2026-10-04T23:52:26Z","repository":"LucasLydio/skillpper","category":"Skill Votes","total_skills":7,"total_votes":0,"skills":[{"skill":"ai-memory-obsidian","description":"Portable workflows for persistent memory and Obsidian across macOS, Linux, and Windows. Use when the user asks to recall or save past context, record decisions, create vault notes, or configure ai-memory, Obsidian CLI, or an Obsidian MCP bridge.","votes":0,"discussion_url":"https://github.com/LucasLydio/skillpper/discussions/4","rank":1},{"skill":"concept-to-excalidraw","description":"Transformar conceitos técnicos em diagramas e boards visuais editáveis no Excalidraw, entregando arquivo .excalidraw. Usar para explicar mecanismos, revisar visuais abstratos ou textuais e executar planos visuais de aulas; criar slides nativos e exportar imagens quando solicitados.","votes":0,"discussion_url":"","rank":2},{"skill":"design-craft","description":"Opinionated product-design skill for building, reviewing, polishing, and iterating on landing pages, apps, dashboards, AI products, design systems, and brand touchpoints. UX and comprehension first, then restraint (three type sizes, delete decoration), then foundations, then tactical craft — hierarchy, spacing systems, type scales, HSL palettes, shadows, finishing touches. Distilled from 20 YC Design Review videos (Linear, Stripe, Cursor, Framer) plus the Refactoring UI book. Use whenever the user asks to design, redesign, critique, or polish anything user-facing: \"make it look better/more professional/trustworthy\", de-slop the AI/vibe-coded look, fix a landing or pricing page, improve conversion, design an AI feature or agent UI, set up tokens or a design system, review a URL/screenshot/mockup. Also trigger for tactical UI questions — spacing feels off, visual hierarchy, choosing colors, typography, empty states, Tailwind/CSS styling — even without the word \"design\". Not for pure backend/DevOps work.","votes":0,"discussion_url":"https://github.com/LucasLydio/skillpper/discussions/5","rank":3},{"skill":"grill-me","description":"Interview the user to clarify requirements, architecture, design, and business rules before implementation. Use the host's available interactive question interface and ask in rounds sized to its limits. Works across macOS, Linux, and Windows. Use when the user asks to grill an idea, plan a major feature, or invokes /grill-me.","votes":0,"discussion_url":"https://github.com/LucasLydio/skillpper/discussions/6","rank":4},{"skill":"prepare-technical-slides","description":"Pesquisar e preparar slides de aulas e palestras técnicas em PT-BR, com fontes verificáveis, sequência didática, contexto e um conceito por slide. Preserva o catálogo aprovado e a rastreabilidade de afirmações; usa concept-to-excalidraw para produzir diagramas, imagens e a apresentação nativa editável no Excalidraw.","votes":0,"discussion_url":"https://github.com/LucasLydio/skillpper/discussions/9","rank":5},{"skill":"skillpper-saver","description":"Aggressive token, context, and cost optimization mode for AI coding agents (Claude Code, Antigravity, Cursor, etc.). Prevents marathon sessions, eliminates redundant file re-reading, prioritizes text extraction over screenshots in browser automation, and manages context windows with surgical cutoff triggers. Use when the user requests token savings, context optimization, quota conservation, or when starting extensive refactoring, browsing, or debugging tasks.","votes":0,"discussion_url":"https://github.com/LucasLydio/skillpper/discussions/7","rank":6},{"skill":"study-quiz","description":"Use ao pedir quiz, teste, prova, simulado, questões de múltipla escolha, mini-desafio, gabarito, “me testa sobre X”, “gera um quiz de X” ou uma avaliação sobre um assunto, em um nível ou numa faixa de níveis. Use também quando o usuário responder um quiz gerado aqui e quiser a correção. Não use para palestras, slides, design, flashcards, resumo ou plano de estudo.","votes":0,"discussion_url":"https://github.com/LucasLydio/skillpper/discussions/8","rank":7}]}</script>
+    <!-- VOTES:END -->
     <script src="app.js" defer></script>
   </body>
 </html>

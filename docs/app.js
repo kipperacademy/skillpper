@@ -12,6 +12,8 @@ const totalSkills = document.querySelector("#totalSkills");
 const updatedAt = document.querySelector("#updatedAt");
 const syncButton = document.querySelector("#syncButton");
 const repositoryLink = document.querySelector("#repositoryLink");
+const copyCmdBtn = document.querySelector("#copyCmdBtn");
+const installGuideLink = document.querySelector("#installGuideLink");
 
 function inferRepositoryFromPagesUrl() {
   const host = window.location.hostname;
@@ -58,6 +60,10 @@ function configureLinks(repository) {
 
   repositoryLink.href = repositoryUrl(repository);
   repositoryLink.hidden = false;
+
+  if (installGuideLink) {
+    installGuideLink.href = `${repositoryUrl(repository)}#how-to-install`;
+  }
 }
 
 function renderSkills(skills) {
@@ -99,25 +105,89 @@ function applySearch() {
   renderSkills(filtered);
 }
 
+function applyVoteData(data) {
+  state.skills = Array.isArray(data.skills) ? data.skills : [];
+  state.repository = data.repository || inferRepositoryFromPagesUrl();
+
+  if (totalVotes)   totalVotes.textContent = data.total_votes ?? 0;
+  totalSkills.textContent = data.total_skills ?? state.skills.length;
+  updatedAt.textContent = formatDate(data.updated_at);
+  configureLinks(state.repository);
+  applySearch();
+}
+
+function readEmbeddedVotes() {
+  const node = document.querySelector("#votesData");
+  if (!node) return null;
+  try {
+    return JSON.parse(node.textContent);
+  } catch {
+    return null;
+  }
+}
+
 async function loadVotes() {
+  const embedded = readEmbeddedVotes();
+  if (embedded) applyVoteData(embedded);
   try {
     const response = await fetch("votes.json", { cache: "no-store" });
     if (!response.ok) throw new Error(`Vote data returned ${response.status}`);
-    const data = await response.json();
-
-    state.skills = Array.isArray(data.skills) ? data.skills : [];
-    state.repository = data.repository || inferRepositoryFromPagesUrl();
-
-    totalVotes.textContent = data.total_votes ?? 0;
-    totalSkills.textContent = data.total_skills ?? state.skills.length;
-    updatedAt.textContent = formatDate(data.updated_at);
-    configureLinks(state.repository);
-    renderSkills(state.skills);
+    applyVoteData(await response.json());
   } catch (error) {
-    updatedAt.textContent = "Could not load vote data";
-    emptyState.textContent = "The dashboard could not load votes.json.";
-    emptyState.hidden = false;
+    if (!embedded) {
+      updatedAt.textContent = "Could not load vote data";
+      emptyState.textContent = "The dashboard could not load vote data.";
+      emptyState.hidden = false;
+    }
   }
+}
+
+if (copyCmdBtn) {
+  const iconCopy = copyCmdBtn.querySelector(".icon-copy");
+  const iconCheck = copyCmdBtn.querySelector(".icon-check");
+  let revertTimer = 0;
+  const showCheck = (on) => {
+    if (iconCopy) iconCopy.toggleAttribute("hidden", on);
+    if (iconCheck) iconCheck.toggleAttribute("hidden", !on);
+    copyCmdBtn.classList.remove("copied");
+    if (on) {
+      void copyCmdBtn.offsetWidth;
+      copyCmdBtn.classList.add("copied");
+    }
+    copyCmdBtn.setAttribute("aria-label", on ? "Copied!" : "Copy installation command");
+  };
+  copyCmdBtn.addEventListener("click", () => {
+    const code = document.querySelector("#installCmd")?.textContent?.trim();
+    if (!code) return;
+    showCheck(false);
+    const write = navigator.clipboard?.writeText
+      ? Promise.race([
+          navigator.clipboard.writeText(code),
+          new Promise((_, reject) => setTimeout(() => reject(new Error("clipboard timeout")), 1000)),
+        ])
+      : Promise.reject(new Error("clipboard unavailable"));
+    write
+      .catch(() => {
+        const field = document.createElement("textarea");
+        field.value = code;
+        document.body.append(field);
+        try {
+          field.select();
+          if (!document.execCommand("copy")) throw new Error("clipboard copy failed");
+        } finally {
+          field.remove();
+        }
+      })
+      .then(() => {
+        showCheck(true);
+        clearTimeout(revertTimer);
+        revertTimer = setTimeout(() => showCheck(false), 2000);
+      })
+      .catch(() => {
+        showCheck(false);
+        copyCmdBtn.setAttribute("aria-label", "Copy failed; select and copy the command manually.");
+      });
+  });
 }
 
 searchInput.addEventListener("input", applySearch);
