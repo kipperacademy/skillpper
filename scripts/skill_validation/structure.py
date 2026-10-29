@@ -358,7 +358,7 @@ def validate_structure(skill: Skill) -> tuple[Finding, ...]:
             name, description = metadata.get("name"), metadata.get("description")
             if not isinstance(name, str) or not _NAME.fullmatch(name) or len(name) > 64:
                 findings.append(_error("STR003", skill_path, "name must be 1-64 lowercase letters, digits, or single hyphens, and match the skill directory"))
-            elif name != skill.name:
+            elif name != skill.name.rsplit("/", 1)[-1]:
                 findings.append(_error("STR003", skill_path, "name must match the skill directory"))
             if not isinstance(description, str) or not description.strip() or len(description) > MAX_DESCRIPTION:
                 findings.append(_error("STR004", skill_path, "description must be a nonempty string of at most 1024 characters"))

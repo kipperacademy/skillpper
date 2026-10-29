@@ -6,6 +6,8 @@ Contributions are reviewed as changes to instructions and supporting files that 
 
 Use Python 3.12 (the CI version) in a virtual environment and install `scripts/requirements.txt` with `python -m pip install -r scripts/requirements.txt`. The hash-locked `requirements-validation.txt` is specific to the Linux CI scanner.
 
+Skills live at the repository root or in the learning category `Aprendizagem/<skill>/`. Keep each complete skill directory together when moving it.
+
 For every skill you add or change:
 
 1. Keep `SKILL.md` focused on the workflow and link local references with relative paths.

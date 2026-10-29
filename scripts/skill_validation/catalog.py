@@ -33,11 +33,12 @@ def discover(files: tuple[SourceFile, ...]) -> tuple[tuple[Skill, ...], tuple[Fi
 
         parts = source.path.split("/")
         if parts[-1] == "SKILL.md" and not (
-            len(parts) == 2 and parts[0] not in INFRASTRUCTURE_ROOTS
+            (len(parts) == 2 and parts[0] not in INFRASTRUCTURE_ROOTS and parts[0] != "Aprendizagem")
+            or (len(parts) == 3 and parts[0] == "Aprendizagem")
         ):
             findings.append(finding(
                 "INV005", "error", source.path, None,
-                "SKILL.md is permitted only at a direct, non-infrastructure root directory.",
+                "SKILL.md is permitted only in a root skill directory or directly inside Aprendizagem.",
                 source.data,
             ))
 
@@ -49,6 +50,8 @@ def discover(files: tuple[SourceFile, ...]) -> tuple[tuple[Skill, ...], tuple[Fi
         root, _ = source.path.split("/", 1)
         if root in INFRASTRUCTURE_ROOTS:
             continue
+        if root == "Aprendizagem" and source.path.count("/") >= 2:
+            root = "/".join(source.path.split("/")[:2])
         roots.setdefault(root, []).append(source)
 
     skills: list[Skill] = []

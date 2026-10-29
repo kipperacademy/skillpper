@@ -22,9 +22,9 @@ MARKER_RE = re.compile(r"<!--\s*skillpper-vote-skill:\s*([a-z0-9]+(?:-[a-z0-9]+)
 
 
 def read_skill_metadata(root: Path) -> dict[str, str]:
-    """Return root-level skill names mapped to descriptions."""
+    """Return root and Aprendizagem skill names mapped to descriptions."""
     skills = {}
-    for path in sorted(root.glob("*/SKILL.md")):
+    for path in sorted([*root.glob("*/SKILL.md"), *root.glob("Aprendizagem/*/SKILL.md")]):
         if path.parent.name.startswith("."):
             continue
         lines = path.read_text(encoding="utf-8").splitlines()
@@ -257,7 +257,7 @@ def canonical_discussions(skills: dict[str, str], registry: dict[str, dict], dis
     return discussions
 
 
-def render_ranking(skills: dict[str, str], discussions: dict[str, dict], category_name: str) -> str:
+def render_ranking(skills: dict[str, str], discussions: dict[str, dict], category_name: str, root: Path = ROOT) -> str:
     rows = ranked_rows(skills, discussions)
 
     lines = [
@@ -272,7 +272,8 @@ def render_ranking(skills: dict[str, str], discussions: dict[str, dict], categor
     for index, row in enumerate(rows, start=1):
         skill = html.escape(row["skill"], quote=False)
         discussion = f"[Vote]({row['discussion_url']})" if row["discussion_url"] else "Not created yet"
-        lines.append(f"| {index} | [{skill}](./{skill}/SKILL.md) | {row['votes']} | {discussion} |")
+        path = f"Aprendizagem/{skill}" if (root / "Aprendizagem" / skill / "SKILL.md").is_file() else skill
+        lines.append(f"| {index} | [{skill}](./{path}/SKILL.md) | {row['votes']} | {discussion} |")
     if not rows:
         lines.append("| - | No skills available yet. | 0 | - |")
     lines.extend(

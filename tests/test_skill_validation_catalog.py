@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def root_skills() -> tuple[str, ...]:
-    return tuple(sorted(path.parent.name for path in ROOT.glob("*/SKILL.md")))
+    return tuple(sorted(path.parent.relative_to(ROOT).as_posix() for path in [*ROOT.glob("*/SKILL.md"), *ROOT.glob("Aprendizagem/*/SKILL.md")]))
 
 
 def source_files(skill_name: str) -> tuple[SourceFile, ...]:
