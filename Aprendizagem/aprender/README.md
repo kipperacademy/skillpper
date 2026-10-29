@@ -15,7 +15,6 @@ O estudo local é gratuito. O MCP da Kipper exige acesso de membro pagante e usa
 ferramentas disponíveis. Busca e correção de questões oficiais, revisões, provas e Conquistas
 ainda não fazem parte desta distribuição. Validação pedagógica com alunos continua em andamento.
 
-Base pedagógica: [teach, de Matt Pocock](https://github.com/mattpocock/skills/tree/main/skills/productivity/teach).
 O aviso MIT da referência está em [THIRD-PARTY-NOTICES.txt](./THIRD-PARTY-NOTICES.txt).
 
 Este pacote é gerado a partir das fontes mantidas pela Kipper Academy; mantenha os contratos
