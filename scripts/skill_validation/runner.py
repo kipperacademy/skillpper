@@ -55,7 +55,8 @@ def validate(files: tuple[SourceFile, ...], policy: dict,
         findings.extend(item for item in scan_security(infrastructure, policy) if item.rule_id == 'SEC001')
         # Similarity explanations contain shared words. Do not derive any such
         # words from skills with detected secrets; these already block the PR.
-        secret_roots = {item.path.split('/', 1)[0] for item in security_findings if item.rule_id == 'SEC001'}
+        secret_roots = {skill.name for skill in skills for item in security_findings
+                        if item.rule_id == 'SEC001' and item.path.startswith(skill.name + '/')}
         findings.extend(compare_skills(tuple(skill for skill in valid_skills if skill.name not in secret_roots)))
     except Exception:
         # Exception messages may contain raw candidate text or credentials.

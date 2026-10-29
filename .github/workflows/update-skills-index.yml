@@ -3,14 +3,14 @@ name: Check skills index
 on:
   push:
     paths:
-      - '*/SKILL.md'
+      - '**/SKILL.md'
       - 'README.md'
       - 'scripts/**'
       - 'tests/**'
       - '.github/workflows/update-skills-index.yml'
   pull_request:
     paths:
-      - '*/SKILL.md'
+      - '**/SKILL.md'
       - 'README.md'
       - 'scripts/**'
       - 'tests/**'

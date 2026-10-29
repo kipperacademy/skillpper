@@ -42,6 +42,10 @@ class SkillsIndexTests(unittest.TestCase):
         path.unlink()
         self.assertIn("No skills available yet", render_index(self.root))
 
+    def test_learning_category_keeps_skill_names_and_nested_links(self):
+        self.skill("Aprendizagem/aprender", "name: aprender\ndescription: Estudo guiado")
+        self.assertIn("[aprender](./Aprendizagem/aprender/SKILL.md)", render_index(self.root))
+
     def test_invalid_metadata_fails_without_changing_readme(self):
         original = self.readme.read_text(encoding="utf-8")
         for metadata in (

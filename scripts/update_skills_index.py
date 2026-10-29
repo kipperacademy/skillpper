@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the README index from root-level skill frontmatter."""
+"""Generate the README index from root and Aprendizagem skill frontmatter."""
 
 import argparse
 import html
@@ -22,7 +22,7 @@ def table_text(value: str) -> str:
 
 def render_index(root: Path) -> str:
     skills = []
-    for path in sorted(root.glob("*/SKILL.md")):
+    for path in sorted([*root.glob("*/SKILL.md"), *root.glob("Aprendizagem/*/SKILL.md")]):
         if path.parent.name.startswith("."):
             continue
         lines = path.read_text(encoding="utf-8").splitlines()
@@ -47,11 +47,11 @@ def render_index(root: Path) -> str:
             raise ValueError(f"{path}: name must use lowercase letters, digits, and hyphens")
         if name != path.parent.name:
             raise ValueError(f"{path}: name must match folder name {path.parent.name!r}")
-        skills.append((name, metadata["description"]))
+        skills.append((name, metadata["description"], path.relative_to(root).as_posix()))
 
     rows = ["| Skill | Description |", "| --- | --- |"]
-    for name, description in sorted(skills):
-        rows.append(f"| [{name}](./{name}/SKILL.md) | {table_text(description)} |")
+    for name, description, path in sorted(skills):
+        rows.append(f"| [{name}](./{path}) | {table_text(description)} |")
     if not skills:
         rows.append("| — | No skills available yet. |")
     return "\n".join(rows)
